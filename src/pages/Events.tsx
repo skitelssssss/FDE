@@ -9,6 +9,17 @@ import { Input } from "@/components/ui/input";
 import { Calendar, MapPin, Clock, Search } from "lucide-react";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
+import { 
+  format, 
+  startOfMonth, 
+  endOfMonth, 
+  eachDayOfInterval, 
+  isSameDay,
+  startOfDay,
+  isBefore
+} from "date-fns";
+import ru from "date-fns/locale/ru";
+
 const parseDate = (dateStr) => {
   if (!dateStr) return new Date().toISOString().split('T')[0];
   const firstDate = dateStr.split(',')[0].trim();
@@ -94,7 +105,6 @@ const Events = () => {
 
   const todayStr = new Date().toISOString().split('T')[0];
 
-  // ✅ Получаем уникальные даты из событий
   const uniqueDates = Array.from(
     new Set(events.map(event => event.date))
   ).sort();
@@ -123,13 +133,48 @@ const Events = () => {
     setCurrentPage(1);
   }, [searchTerm, selectedDate]);
 
-  const formatDate = (dateString) => {
+  const formatDotDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('ru-RU', { 
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    });
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}.${month}.${year}`;
+  };
+
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+
+  const daysInMonth = eachDayOfInterval({
+    start: startOfMonth(currentMonth),
+    end: endOfMonth(currentMonth)
+  });
+
+  const isDateAvailable = (date) => {
+    const dateString = format(date, 'yyyy-MM-dd');
+    return uniqueDates.includes(dateString);
+  };
+
+  const isFutureOrToday = (date) => {
+    return !isBefore(date, new Date());
+  };
+
+  const handleDateClick = (date) => {
+    const normalizedDate = startOfDay(date);
+    const dateString = format(normalizedDate, 'yyyy-MM-dd');
+    setSelectedDate(dateString);
+    setIsCalendarOpen(false);
+  };
+
+  const goToPrevMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
+  };
+
+  const goToNextMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
+  };
+
+  const getDaysOfWeek = () => {
+    return ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
   };
 
   return (
@@ -153,33 +198,81 @@ const Events = () => {
               placeholder="Поиск по названию..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 w-full"
+              className="pl-10"
             />
           </div>
 
-          <div className="flex w-full md:w-64 gap-2">
-            <Input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              className="flex-1"
-            />
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setSelectedDate(todayStr)}
-              className="whitespace-nowrap"
+          <div className="w-full md:w-64 relative">
+            <button
+              onClick={() => setIsCalendarOpen(!isCalendarOpen)}
+              className={`w-full h-10 px-3 py-2 rounded-lg border ${isCalendarOpen ? 'border-primary' : 'border-gray-300'} 
+                          text-gray-700 flex items-center justify-between hover:bg-gray-50 cursor-pointer transition-colors`}
             >
-              Сегодня
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setSelectedDate("")}
-              className="whitespace-nowrap"
-            >
-              Сбросить
-            </Button>
+              <span className="text-sm truncate">
+                {selectedDate ? formatDotDate(selectedDate) : 'ДД.ММ.ГГГГ'}
+              </span>
+              <Calendar size={16} />
+            </button>
+            {isCalendarOpen && (
+              <div className="absolute top-full right-0 w-64 p-4 bg-white border rounded-lg shadow-xl z-50 mt-1">
+                <div className="flex justify-between items-center mb-4">
+                  <button
+                    onClick={goToPrevMonth}
+                    className="text-gray-600 hover:text-gray-800"
+                  >
+                    ←
+                  </button>
+                  <h3 className="font-medium text-gray-800">
+                    {format(currentMonth, 'LLLL yyyy', { locale: ru })}
+                  </h3>
+                  <button
+                    onClick={goToNextMonth}
+                    className="text-gray-600 hover:text-gray-800"
+                  >
+                    →
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-7 gap-1 mb-2">
+                  {getDaysOfWeek().map(day => (
+                    <div key={day} className="text-center text-xs text-gray-500 font-medium">
+                      {day}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="grid grid-cols-7 gap-1 mb-3">
+                  {daysInMonth.map(date => (
+                    <button
+                      key={date.toISOString()}
+                      onClick={() => handleDateClick(date)}
+                      disabled={!isFutureOrToday(date)}
+                      className={`w-8 h-8 text-sm rounded-full transition-colors flex items-center justify-center ${
+                        isSameDay(date, new Date()) 
+                          ? 'bg-primary/10 text-primary border border-primary/30' 
+                          : isDateAvailable(date) && isFutureOrToday(date)
+                            ? 'hover:bg-primary/5 text-primary cursor-pointer' 
+                            : 'text-gray-300 cursor-not-allowed opacity-50'
+                      }`}
+                    >
+                      {date.getDate()}
+                    </button>
+                  ))}
+                </div>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setSelectedDate("");
+                    setIsCalendarOpen(false);
+                  }}
+                  className="w-full text-primary border-primary/30 hover:bg-primary/5"
+                >
+                  Сбросить фильтр
+                </Button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -224,7 +317,7 @@ const Events = () => {
               <CardContent className="space-y-3">
                 <div className="flex items-center text-sm text-muted-foreground">
                   <Calendar size={16} className="mr-2" />
-                  {formatDate(event.date)}
+                  {formatDotDate(event.date)}
                 </div>
                 
                 <div className="flex items-center text-sm text-muted-foreground">
