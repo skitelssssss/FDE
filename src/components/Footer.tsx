@@ -52,10 +52,11 @@ const Footer = () => {
         </div>
         
         <div className="border-t border-border mt-8 pt-8 text-center">
-          <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-            Сделано с <Heart size={16} className="mx-1 text-red-500 inline" /> для Минска<br />
-            <span className="mt-1 block">студентами БГЭУ, факультета ФЦЭ и МЭО</span>
-          </p>
+        <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mx-auto">
+          Сделано студентами факультетов ФЦЭ и МЭО<br />
+          Белорусского государственного экономического университета<br />
+          С <Heart size={16} className="mx-1 text-red-500 inline animate-pulse" /> для Минска
+        </p>
         </div>
       </div>
     </footer>

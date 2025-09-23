@@ -273,7 +273,7 @@ const Map = () => {
                       </Button>
                     </DialogTrigger>
 
-                    <DialogContent className="max-w-md md:max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white p-6 md:p-8">
+                    <DialogContent className="max-w-md md:max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl p-8 md:p-8">
                       <EventSubmissionForm />
                     </DialogContent>
                   </Dialog>
