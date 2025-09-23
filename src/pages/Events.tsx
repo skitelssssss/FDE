@@ -48,7 +48,7 @@ const Events = () => {
         
         const response = await fetch(url);
         if (!response.ok) {
-          throw new Error(`Failed to fetch  ${response.status} ${response.statusText}`);
+          throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
         }
         const data = await response.json();
         
@@ -93,6 +93,11 @@ const Events = () => {
   }, []);
 
   const todayStr = new Date().toISOString().split('T')[0];
+
+  // ✅ Получаем уникальные даты из событий
+  const uniqueDates = Array.from(
+    new Set(events.map(event => event.date))
+  ).sort();
 
   const filteredEvents = events
     .filter(event => (event.title || '').toLowerCase().includes(searchTerm.toLowerCase()))
@@ -148,15 +153,33 @@ const Events = () => {
               placeholder="Поиск по названию..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
+              className="pl-10 w-full"
             />
           </div>
-          <div className="w-full md:w-64">
+
+          <div className="flex w-full md:w-64 gap-2">
             <Input
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
+              className="flex-1"
             />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setSelectedDate(todayStr)}
+              className="whitespace-nowrap"
+            >
+              Сегодня
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setSelectedDate("")}
+              className="whitespace-nowrap"
+            >
+              Сбросить
+            </Button>
           </div>
         </div>
 
