@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { MapPin, Calendar, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { YMaps, Map as YMap, Placemark, ZoomControl, GeolocationControl } from "@pbe/react-yandex-maps";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import EventSubmissionForm from "@/components/EventSubmissionForm";
 
 const parseDate = (dateStr: string) => {
   if (!dateStr) return new Date().toISOString().split('T')[0];
@@ -34,6 +36,7 @@ const Map = () => {
   const [selectedEvent, setSelectedEvent] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false); 
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -259,64 +262,25 @@ const Map = () => {
                   <p className="text-muted-foreground mb-4">
                     Не видите свое мероприятие на карте?
                   </p>
-                  <Link to="/#submit-form">
-                    <Button variant="outline"
-                      className="flex items-center
-                                group
-                                transition-all duration-300 
-                                hover:scale-105 hover:shadow-lg hover:shadow-primary/20 
-                                active:scale-95
-                                will-change-transform 
-                                backface-visibility-hidden"
-                    >
-                      Предложить мероприятие
-                    </Button>
-                  </Link>
+
+                  <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="flex items-center group transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 active:scale-95 will-change-transform backface-visibility-hidden"
+                      >
+                        Предложить мероприятие
+                      </Button>
+                    </DialogTrigger>
+
+                    <DialogContent className="max-w-md md:max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white p-6 md:p-8">
+                      <EventSubmissionForm />
+                    </DialogContent>
+                  </Dialog>
                 </CardContent>
               </Card>
             </div>
           </div>
-        )}
-
-        {selectedEvent && !error && (
-          <Card className="mt-6 border-primary/50 bg-gradient-to-r from-card to-primary/5">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-primary">Выбранное мероприятие</CardTitle>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setSelectedEvent(null)}
-                >
-                  ✕
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <h3 className="font-semibold text-lg mb-2">{selectedEvent.title}</h3>
-                  <p className="text-muted-foreground mb-2">{selectedEvent.location}</p>
-                  <p className="text-sm text-muted-foreground">{selectedEvent.address}</p>
-                </div>
-                <div className="flex flex-col justify-center space-y-2">
-                  <div className="flex items-center">
-                    <Calendar size={16} className="mr-2" />
-                    {formatDate(selectedEvent.date)}
-                  </div>
-                  <div className="flex items-center">
-                    <Clock size={16} className="mr-2" />
-                    {selectedEvent.time}
-                  </div>
-                  <Link to={`/event/${selectedEvent.id}`}>
-                    <Button className="mt-2 btn-cultural">
-                      Подробная информация
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         )}
       </main>
       

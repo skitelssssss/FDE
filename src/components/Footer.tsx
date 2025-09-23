@@ -14,7 +14,7 @@ const Footer = () => {
           </div>
           
           <div className="space-y-4">
-            <h4 className="font-semibold text-foreground">Контакты</h4>
+            <h4 className="font-semibold text-foreground text-primary">Контакты</h4>
             <div className="space-y-2 text-sm text-muted-foreground">
             <div className="flex items-center space-x-2">
               <Mail size={16} />
@@ -43,7 +43,7 @@ const Footer = () => {
           </div>
           
           <div className="space-y-4">
-            <h4 className="font-semibold text-foreground">О проекте</h4>
+            <h4 className="font-semibold text-foreground text-primary">О проекте</h4>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Мы стремимся сделать культурную жизнь Минска доступной и удобной 
               для всех жителей и гостей города.
@@ -52,8 +52,9 @@ const Footer = () => {
         </div>
         
         <div className="border-t border-border mt-8 pt-8 text-center">
-          <p className="text-sm text-muted-foreground flex items-center justify-center">
-            Сделано с <Heart size={16} className="mx-1 text-red-500" /> для города Минска
+          <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mx-auto">
+            Сделано с <Heart size={16} className="mx-1 text-red-500 inline" /> для Минска<br />
+            <span className="mt-1 block">студентами БГЭУ, факультета ФЦЭ и МЭО</span>
           </p>
         </div>
       </div>

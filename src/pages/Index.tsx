@@ -5,7 +5,6 @@ import EventSubmissionForm from "@/components/EventSubmissionForm";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin, Calendar, Users, Sparkles, ArrowRight, Heart } from "lucide-react";
-import { Building2, Smile } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate(); 
@@ -38,17 +37,20 @@ const Index = () => {
       <Header />
       
       <main>
-        {/* Hero Section */}
         <section className="relative py-20 lg:py-32 overflow-hidden">
         <div className="absolute inset-0">
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-full object-cover"
-            src="/videos/hero-video.mp4"
-          />
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          className="w-full h-full object-cover"
+        >
+          <source src="/videos/hero-video.webm" type="video/webm" />
+          <source src="/videos/hero-video.mp4" type="video/mp4" />
+        </video>
+
         </div>
           <div className="absolute inset-0 bg-amber-400/10 pointer-events-none"></div>
           
@@ -63,7 +65,6 @@ const Index = () => {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                {/* 👇 Заменили Link на Button с navigate + scrollTo */}
                 <Button
                   size="lg"
                   className="btn-cultural text-lg px-8 py-4 
@@ -111,12 +112,10 @@ const Index = () => {
             </div>
           </div>
           
-          {/* Decorative elements */}
           <div className="absolute top-10 left-10 w-20 h-20 bg-accent/20 rounded-full blur-xl"></div>
           <div className="absolute bottom-10 right-10 w-32 h-32 bg-primary/20 rounded-full blur-2xl"></div>
         </section>
 
-        {/* Features Section */}
         <section className="py-20 bg-subtle-gradient">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
@@ -158,7 +157,6 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Stats Section */}
         <section className="py-16 bg-primary text-primary-foreground">
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
@@ -178,7 +176,6 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Event Submission Form Section */}
         <section id="submit-form" className="py-20 bg-subtle-gradient">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
@@ -194,7 +191,6 @@ const Index = () => {
           </div>
         </section>
 
-        {/* CTA Section */}
         <section className="py-20 bg-primary text-primary-foreground">
           <div className="container mx-auto px-4 text-center">
             <div className="max-w-3xl mx-auto">
@@ -226,7 +222,6 @@ const Index = () => {
                   Все мероприятия
                 </Button>
                 </Link>
-                {/* 👇 Заменили Link на Button с navigate + scrollTo */}
                 <Button
                   size="lg"
                   variant="outline"

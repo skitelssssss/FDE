@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Calendar, Map, List, Menu, X } from "lucide-react";
 
 const Header = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const navItems = [
@@ -13,11 +14,19 @@ const Header = () => {
     { path: "/events/today", label: "Мероприятия сегодня", icon: Calendar },
   ];
 
-  const handleLogoClick = (e: React.MouseEvent) => {
+  const handleLogoClick = (e) => {
     if (location.pathname === "/") {
       e.preventDefault();
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
+  };
+
+  const handleNavItemClick = (path) => {
+    setMenuOpen(false);
+    navigate(path);
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 100);
   };
 
   return (
@@ -32,21 +41,21 @@ const Header = () => {
             Культура в кармане
           </a>
         ) : (
-          <Link
-            to="/"
+          <button
+            onClick={() => handleNavItemClick("/")}
             className="text-xl font-bold text-primary hover:text-accent transition-colors"
           >
             Культура в кармане
-          </Link>
+          </button>
         )}
 
         <nav className="hidden md:flex items-center space-x-6">
           {navItems.map((item) => {
             const Icon = item.icon;
             return (
-              <Link
+              <button
                 key={item.path}
-                to={item.path}
+                onClick={() => handleNavItemClick(item.path)}
                 className={`flex items-center space-x-2 text-sm font-medium transition-colors hover:text-primary ${
                   location.pathname === item.path
                     ? "text-primary"
@@ -55,12 +64,11 @@ const Header = () => {
               >
                 <Icon size={16} />
                 <span>{item.label}</span>
-              </Link>
+              </button>
             );
           })}
         </nav>
 
-        {/* Mobile menu toggle button */}
         <div className="md:hidden">
           <Button
             size="sm"
@@ -72,7 +80,6 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile dropdown menu with very smooth animation */}
       <div
         className={`md:hidden overflow-hidden transition-[max-height,opacity] duration-1000 ease-in-out ${
           menuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
@@ -86,10 +93,9 @@ const Header = () => {
           {navItems.map((item, index) => {
             const Icon = item.icon;
             return (
-              <Link
+              <button
                 key={item.path}
-                to={item.path}
-                onClick={() => setMenuOpen(false)}
+                onClick={() => handleNavItemClick(item.path)}
                 className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors delay-[${
                   index * 100
                 }ms] ${
@@ -100,7 +106,7 @@ const Header = () => {
               >
                 <Icon size={18} />
                 <span>{item.label}</span>
-              </Link>
+              </button>
             );
           })}
         </div>

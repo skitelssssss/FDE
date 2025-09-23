@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, MapPin, Clock, Sparkles } from "lucide-react";
+import { Calendar, MapPin, Clock, Heart } from "lucide-react";
 
 const parseDate = (dateStr: string) => {
   if (!dateStr) return [];
@@ -119,10 +119,22 @@ const EventsToday = () => {
             <Calendar size={64} className="mx-auto text-muted-foreground mb-6" />
             <h3 className="text-xl font-semibold mb-4">{error}</h3>
             <Link to="/events">
-              <Button className="btn-cultural">
-                Все мероприятия
-              </Button>
-            </Link>
+            <Button
+              size="lg"
+              className="btn-cultural text-lg px-8 py-4 
+                        group 
+                        transition-all duration-300 
+                        hover:scale-105 hover:shadow-xl hover:shadow-primary/30 
+                        active:scale-95
+                        w-full sm:w-auto min-w-[240px]"
+            >
+              <Heart
+                className="mr-2 transition-transform duration-300 group-hover:scale-120 group-hover:rotate-12"
+                size={20}
+              />
+              Все мероприятия
+            </Button>
+          </Link>
           </div>
         ) : events.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
@@ -208,10 +220,22 @@ const EventsToday = () => {
               Но не расстраивайтесь! Посмотрите, что интересного планируется на ближайшие дни.
             </p>
             <Link to="/events">
-              <Button className="btn-cultural">
-                Все мероприятия
-              </Button>
-            </Link>
+  <Button
+    size="lg"
+    className="btn-cultural text-lg px-8 py-4 
+              group 
+              transition-all duration-300 
+              hover:scale-105 hover:shadow-xl hover:shadow-primary/30 
+              active:scale-95
+              w-full sm:w-auto min-w-[240px]"
+  >
+    <Heart
+      className="mr-2 transition-transform duration-300 group-hover:scale-120 group-hover:rotate-12"
+      size={20}
+    />
+    Все мероприятия
+  </Button>
+</Link>
           </div>
         )}
 

@@ -3,9 +3,8 @@ import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Calendar, MapPin, Clock, ArrowLeft, Share2, Heart } from "lucide-react";
+import { Calendar, MapPin, Clock, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { YMaps, Map as YMap, Placemark, ZoomControl } from "@pbe/react-yandex-maps";
 

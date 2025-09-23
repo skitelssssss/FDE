@@ -46,7 +46,8 @@ const EventSubmissionForm = () => {
   };
 
   return (
-    <Card className="max-w-2xl mx-auto event-card
+    <Card 
+    className="max-w-2xl mx-auto event-card
                     p-1
                     transition-all duration-250 ease-out
                     md:hover:scale-103 md:hover:-translate-y-1

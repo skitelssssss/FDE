@@ -24,7 +24,6 @@ const App = () => (
           <Route path="/events/today" element={<EventsToday />} />
           <Route path="/event/:id" element={<EventDetail />} />
           <Route path="/map" element={<Map />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
