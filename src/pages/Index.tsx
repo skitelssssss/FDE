@@ -109,6 +109,7 @@ const Index = () => {
                 }`}
               >
                 <source src="/videos/hero-video.mp4" type="video/mp4" />
+                <source src="/videos/hero-video.webm" type="video/webm" />
                 Ваш браузер не поддерживает видео.
               </video>
             )}
