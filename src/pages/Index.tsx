@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -10,7 +10,34 @@ import { MapPin, Calendar, Users, Sparkles, ArrowRight, Heart } from "lucide-rea
 const Index = () => {
   const navigate = useNavigate();
   const videoRef = useRef(null);
-  const [videoReady, setVideoReady] = useState(false);
+  const [videoFullyLoaded, setVideoFullyLoaded] = useState(false);
+  const [videoError, setVideoError] = useState(false);
+
+  // Попытка убедиться, что видео загружено полностью
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handleCanPlayThrough = () => {
+      // canplaythrough = браузер уверен, что может проиграть до конца без буферизации
+      setVideoFullyLoaded(true);
+    };
+
+    const handleError = () => {
+      setVideoError(true);
+    };
+
+    video.addEventListener('canplaythrough', handleCanPlayThrough);
+    video.addEventListener('error', handleError);
+
+    // Начинаем загрузку видео
+    video.load();
+
+    return () => {
+      video.removeEventListener('canplaythrough', handleCanPlayThrough);
+      video.removeEventListener('error', handleError);
+    };
+  }, []);
 
   const features = [
     {
@@ -41,37 +68,31 @@ const Index = () => {
       
       <main>
         <section className="relative py-20 lg:py-32 overflow-hidden">
-          {/* Fallback изображение + видео */}
           <div className="absolute inset-0">
-            {/* Fallback — всегда на заднем плане */}
+            {/* Fallback-изображение — всегда на заднем плане */}
             <img
               src="/images/hero-fallback.png"
               alt="Культурная жизнь Минска"
               className="w-full h-full object-cover"
             />
             
-            {/* Видео поверх изображения */}
-            <video
-              ref={videoRef}
-              autoPlay
-              loop
-              muted
-              playsInline
-              preload="metadata"
-              className={`w-full h-full object-cover absolute inset-0 transition-opacity duration-500 ${
-                videoReady ? 'opacity-100' : 'opacity-0'
-              }`}
-              onPlay={() => {
-                setVideoReady(true);
-              }}
-              onError={() => {
-                setVideoReady(false);
-              }}
-            >
-              <source src="/videos/hero-video.webm" type="video/webm" />
-              <source src="/videos/hero-video.mp4" type="video/mp4" />
-              {/* Если video не поддерживается — остаётся img */}
-            </video>
+            {/* Видео — поверх изображения, но скрыто до полной загрузки */}
+            {!videoError && (
+              <video
+                ref={videoRef}
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="auto"
+                className={`w-full h-full object-cover absolute inset-0 transition-opacity duration-500 ${
+                  videoFullyLoaded ? 'opacity-100' : 'opacity-0'
+                }`}
+                // Источник видео
+              >
+                <source src="/videos/hero-video.mp4" type="video/mp4" />
+              </video>
+            )}
           </div>
 
           <div className="absolute inset-0 bg-amber-400/10 pointer-events-none"></div>
@@ -138,6 +159,7 @@ const Index = () => {
           <div className="absolute bottom-10 right-10 w-32 h-32 bg-primary/20 rounded-full blur-2xl"></div>
         </section>
 
+        {/* ... остальные секции без изменений ... */}
         <section className="py-20 bg-subtle-gradient">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
