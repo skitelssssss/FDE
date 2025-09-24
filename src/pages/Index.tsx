@@ -4,38 +4,58 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import EventSubmissionForm from "@/components/EventSubmissionForm";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { MapPin, Calendar, Users, Sparkles, ArrowRight, Heart } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  MapPin,
+  Calendar,
+  Users,
+  Sparkles,
+  ArrowRight,
+  Heart,
+} from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
-  const videoRef = useRef(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const [videoFullyLoaded, setVideoFullyLoaded] = useState(false);
   const [videoError, setVideoError] = useState(false);
 
-  // Попытка убедиться, что видео загружено полностью
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
     const handleCanPlayThrough = () => {
-      // canplaythrough = браузер уверен, что может проиграть до конца без буферизации
-      setVideoFullyLoaded(true);
+      if (video.readyState === 4) {
+        setVideoFullyLoaded(true);
+        video
+          .play()
+          .then(() => {
+          })
+          .catch((err) => {
+            console.warn("Не удалось воспроизвести видео:", err);
+            setVideoError(true);
+          });
+      }
     };
 
     const handleError = () => {
       setVideoError(true);
     };
 
-    video.addEventListener('canplaythrough', handleCanPlayThrough);
-    video.addEventListener('error', handleError);
+    video.addEventListener("canplaythrough", handleCanPlayThrough);
+    video.addEventListener("error", handleError);
 
-    // Начинаем загрузку видео
     video.load();
 
     return () => {
-      video.removeEventListener('canplaythrough', handleCanPlayThrough);
-      video.removeEventListener('error', handleError);
+      video.removeEventListener("canplaythrough", handleCanPlayThrough);
+      video.removeEventListener("error", handleError);
     };
   }, []);
 
@@ -43,70 +63,67 @@ const Index = () => {
     {
       icon: Calendar,
       title: "Актуальные события",
-      description: "Всегда свежая информация о культурных мероприятиях Минска"
+      description: "Всегда свежая информация о культурных мероприятиях Минска",
     },
     {
       icon: MapPin,
       title: "Удобная карта",
-      description: "Находите события рядом с вами на интерактивной карте города"
+      description: "Находите события рядом с вами на интерактивной карте города",
     },
     {
       icon: Users,
       title: "Для всех",
-      description: "События для любых возрастов и интересов - от классики до авангарда"
+      description: "События для любых возрастов и интересов - от классики до авангарда",
     },
     {
       icon: Sparkles,
       title: "Качественный отбор",
-      description: "Только лучшие и проверенные культурные мероприятия"
-    }
+      description: "Только лучшие и проверенные культурные мероприятия",
+    },
   ];
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       <main>
         <section className="relative py-20 lg:py-32 overflow-hidden">
           <div className="absolute inset-0">
-            {/* Fallback-изображение — всегда на заднем плане */}
-            <img
-              src="/images/hero-fallback.png"
-              alt="Культурная жизнь Минска"
-              className="w-full h-full object-cover"
-            />
-            
-            {/* Видео — поверх изображения, но скрыто до полной загрузки */}
+            {!videoFullyLoaded && (
+              <img
+                src="/images/hero-fallback.png"
+                alt="Культурная жизнь Минска"
+                className="w-full h-full object-cover"
+              />
+            )}
+
             {!videoError && (
               <video
                 ref={videoRef}
-                autoPlay
                 loop
                 muted
                 playsInline
                 preload="auto"
                 className={`w-full h-full object-cover absolute inset-0 transition-opacity duration-500 ${
-                  videoFullyLoaded ? 'opacity-100' : 'opacity-0'
+                  videoFullyLoaded ? "opacity-100" : "opacity-0"
                 }`}
-                // Источник видео
               >
                 <source src="/videos/hero-video.mp4" type="video/mp4" />
+                Ваш браузер не поддерживает видео.
               </video>
             )}
           </div>
 
           <div className="absolute inset-0 bg-amber-400/10 pointer-events-none"></div>
-          
+
           <div className="relative container mx-auto px-4 text-center">
             <div className="max-w-4xl mx-auto animate-fade-in">
-              <h1 className="hero-title mb-6">
-                Культура в кармане
-              </h1>
+              <h1 className="hero-title mb-6">Культура в кармане</h1>
               <p className="hero-subtitle mb-8">
-                Ваш персональный гид по культурной жизни Минска. Откройте для себя 
+                Ваш персональный гид по культурной жизни Минска. Откройте для себя
                 лучшие театры, музеи, концерты и выставки в одном приложении.
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <Button
                   size="lg"
@@ -117,9 +134,9 @@ const Index = () => {
                             active:scale-95
                             w-full sm:w-auto min-w-[240px]"
                   onClick={() => {
-                    navigate('/map');
+                    navigate("/map");
                     setTimeout(() => {
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                      window.scrollTo({ top: 0, behavior: "smooth" });
                     }, 100);
                   }}
                 >
@@ -154,12 +171,11 @@ const Index = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="absolute top-10 left-10 w-20 h-20 bg-accent/20 rounded-full blur-xl"></div>
           <div className="absolute bottom-10 right-10 w-32 h-32 bg-primary/20 rounded-full blur-2xl"></div>
         </section>
 
-        {/* ... остальные секции без изменений ... */}
         <section className="py-20 bg-subtle-gradient">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
@@ -170,13 +186,13 @@ const Index = () => {
                 Мы делаем культурную жизнь Минска доступной и удобной
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {features.map((feature, index) => {
                 const Icon = feature.icon;
                 return (
-                  <Card 
-                    key={index} 
+                  <Card
+                    key={index}
                     className="event-card text-center animate-fade-in 
                               transition-all duration-300 
                               hover:scale-110 hover:-translate-y-4 hover:shadow-2xl hover:shadow-primary/40 
@@ -206,15 +222,21 @@ const Index = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
               <div className="space-y-2">
                 <div className="text-4xl font-bold">70+</div>
-                <div className="text-primary-foreground/80">Ежемесячно проводится множество мероприятий</div>
+                <div className="text-primary-foreground/80">
+                  Ежемесячно проводится множество мероприятий
+                </div>
               </div>
               <div className="space-y-2">
                 <div className="text-4xl font-bold">50+</div>
-                <div className="text-primary-foreground/80">Большое количество культурных площадок</div>
+                <div className="text-primary-foreground/80">
+                  Большое количество культурных площадок
+                </div>
               </div>
               <div className="space-y-2">
                 <div className="text-4xl font-bold">95%</div>
-                <div className="text-primary-foreground/80">Множество пользователей остаются довольны</div>
+                <div className="text-primary-foreground/80">
+                  Множество пользователей остаются довольны
+                </div>
               </div>
             </div>
           </div>
@@ -230,7 +252,7 @@ const Index = () => {
                 Знаете о интересном культурном событии? Помогите другим его найти!
               </p>
             </div>
-            
+
             <EventSubmissionForm />
           </div>
         </section>
@@ -242,10 +264,10 @@ const Index = () => {
                 Готовы погрузиться в культурную жизнь Минска?
               </h2>
               <p className="text-xl text-primary-foreground/90 mb-8">
-                Присоединяйтесь к тысячам людей, которые уже открыли для себя 
+                Присоединяйтесь к тысячам людей, которые уже открыли для себя
                 удивительный мир культуры нашего города
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link to="/events">
                   <Button
@@ -281,9 +303,9 @@ const Index = () => {
                             group
                             w-full sm:w-auto min-w-[240px]"
                   onClick={() => {
-                    navigate('/map');
+                    navigate("/map");
                     setTimeout(() => {
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                      window.scrollTo({ top: 0, behavior: "smooth" });
                     }, 100);
                   }}
                 >
@@ -298,7 +320,7 @@ const Index = () => {
           </div>
         </section>
       </main>
-      
+
       <Footer />
     </div>
   );
