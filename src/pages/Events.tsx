@@ -209,7 +209,7 @@ const Events = () => {
                           text-gray-700 flex items-center justify-between hover:bg-gray-50 cursor-pointer transition-colors`}
             >
               <span className="text-sm truncate">
-                {selectedDate ? formatDotDate(selectedDate) : 'ДД.ММ.ГГГГ'}
+                {selectedDate ? formatDotDate(selectedDate) : 'дд.мм.гг'}
               </span>
               <Calendar size={16} />
             </button>
