@@ -12,10 +12,6 @@ const Index = () => {
   const videoRef = useRef(null);
   const [videoReady, setVideoReady] = useState(false);
 
-  const handleVideoCanPlayThrough = () => {
-    setVideoReady(true);
-  };
-
   const features = [
     {
       icon: Calendar,
@@ -45,29 +41,36 @@ const Index = () => {
       
       <main>
         <section className="relative py-20 lg:py-32 overflow-hidden">
-          {!videoReady && (
-            <div className="absolute inset-0">
-              <img
-                src="/images/hero-fallback.png"
-                alt="Культурная жизнь Минска"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          )}
-
-          <div className={`absolute inset-0 transition-opacity duration-500 ${videoReady ? 'opacity-100' : 'opacity-0'}`}>
+          {/* Fallback изображение + видео */}
+          <div className="absolute inset-0">
+            {/* Fallback — всегда на заднем плане */}
+            <img
+              src="/images/hero-fallback.png"
+              alt="Культурная жизнь Минска"
+              className="w-full h-full object-cover"
+            />
+            
+            {/* Видео поверх изображения */}
             <video
               ref={videoRef}
               autoPlay
               loop
               muted
               playsInline
-              preload="auto"
-              onCanPlayThrough={handleVideoCanPlayThrough}
-              className="w-full h-full object-cover"
+              preload="metadata"
+              className={`w-full h-full object-cover absolute inset-0 transition-opacity duration-500 ${
+                videoReady ? 'opacity-100' : 'opacity-0'
+              }`}
+              onPlay={() => {
+                setVideoReady(true);
+              }}
+              onError={() => {
+                setVideoReady(false);
+              }}
             >
               <source src="/videos/hero-video.webm" type="video/webm" />
               <source src="/videos/hero-video.mp4" type="video/mp4" />
+              {/* Если video не поддерживается — остаётся img */}
             </video>
           </div>
 
@@ -223,23 +226,23 @@ const Index = () => {
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link to="/events">
-                <Button
-                  size="lg"
-                  variant="secondary"
-                  className="text-lg px-8 py-4 
-                            transition-all duration-300 
-                            hover:scale-105 hover:shadow-md 
-                            hover:bg-secondary/90 
-                            active:scale-95 
-                            relative group
-                            w-full sm:w-auto min-w-[240px]"
-                >
-                  <Heart
-                    className="mr-2 transition-transform duration-300 group-hover:scale-120 group-hover:rotate-12"
-                    size={20}
-                  />
-                  Все мероприятия
-                </Button>
+                  <Button
+                    size="lg"
+                    variant="secondary"
+                    className="text-lg px-8 py-4 
+                              transition-all duration-300 
+                              hover:scale-105 hover:shadow-md 
+                              hover:bg-secondary/90 
+                              active:scale-95 
+                              relative group
+                              w-full sm:w-auto min-w-[240px]"
+                  >
+                    <Heart
+                      className="mr-2 transition-transform duration-300 group-hover:scale-120 group-hover:rotate-12"
+                      size={20}
+                    />
+                    Все мероприятия
+                  </Button>
                 </Link>
                 <Button
                   size="lg"
