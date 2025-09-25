@@ -64,12 +64,11 @@ const groupEventsByCoordinates = (events) => {
 
 const Map = () => {
   const [events, setEvents] = useState([]);
-  const [selectedEventIds, setSelectedEventIds] = useState([]); // ← массив ID
+  const [selectedEventIds, setSelectedEventIds] = useState([]);
   const [error, setError] = useState(null);
   const [selectedDate, setSelectedDate] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   
-  // Календарь
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const calendarRef = useRef(null);
@@ -144,7 +143,6 @@ const Map = () => {
     });
   };
 
-  // Календарь логика
   const daysInMonth = eachDayOfInterval({
     start: startOfMonth(currentMonth),
     end: endOfMonth(currentMonth)
@@ -162,8 +160,13 @@ const Map = () => {
   const handleDateClick = (date) => {
     const normalizedDate = startOfDay(date);
     const dateString = format(normalizedDate, 'yyyy-MM-dd');
-    setSelectedDate(dateString);
-    setIsCalendarOpen(false);
+
+    if (selectedDate === dateString) {
+      setIsCalendarOpen(true);
+    } else {
+      setSelectedDate(dateString);
+      setIsCalendarOpen(false);
+    }
   };
 
   const goToPrevMonth = () => {
@@ -178,7 +181,6 @@ const Map = () => {
     return ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
   };
 
-  // Закрытие календаря при клике вне
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (calendarRef.current && !calendarRef.current.contains(event.target)) {
@@ -275,14 +277,28 @@ const Map = () => {
                   </YMaps>
                 </div>
 
-                {/* Блок "Легенда и фильтр" — СЛЕВА СВЕРХУ */}
                 <div className="absolute top-4 left-4 bg-card/95 backdrop-blur-sm rounded-lg p-3 shadow-lg space-y-3" ref={calendarRef}>
-                  <div className="text-sm font-medium">Легенда и фильтр</div>
-                  <div className="flex items-center gap-2 text-xs">
-                    <div className="w-4 h-4 bg-primary rounded-full"></div>
-                    <span>Мероприятие</span>
-                  </div>
+                  <div className="text-sm font-medium text-primary">Легенда и фильтр</div>
                   
+                  <div className="space-y-1 text-xs">
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-full bg-blue-500/30 border border-blue-300/50"></div>
+                      <span>Сегодня</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-full bg-green-500/30"></div>
+                      <span>Выбранная дата</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-full border bg-red-200"></div>
+                      <span>Доступная дата</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-full bg-gray-200 opacity-50"></div>
+                      <span>Недоступно</span>
+                    </div>
+                  </div>
+
                   <div className="w-full relative">
                     <button
                       onClick={() => setIsCalendarOpen(!isCalendarOpen)}
@@ -323,22 +339,35 @@ const Map = () => {
                         </div>
 
                         <div className="grid grid-cols-7 gap-1 mb-3">
-                          {daysInMonth.map(date => (
-                            <button
-                              key={date.toISOString()}
-                              onClick={() => handleDateClick(date)}
-                              disabled={!isFutureOrToday(date)}
-                              className={`w-8 h-8 text-sm rounded-full transition-colors flex items-center justify-center ${
-                                isSameDay(date, new Date()) 
-                                  ? 'bg-primary/10 text-primary border border-primary/30' 
-                                  : isDateAvailable(date) && isFutureOrToday(date)
-                                    ? 'hover:bg-primary/5 text-primary cursor-pointer' 
-                                    : 'text-gray-300 cursor-not-allowed opacity-50'
-                              }`}
-                            >
-                              {date.getDate()}
-                            </button>
-                          ))}
+                          {daysInMonth.map(date => {
+                            const dateStr = format(date, 'yyyy-MM-dd');
+                            const isToday = isSameDay(date, new Date());
+                            const isSelected = selectedDate === dateStr;
+                            const isAvailable = isDateAvailable(date) && isFutureOrToday(date);
+
+                            let buttonClass = "w-8 h-8 text-sm rounded-full transition-colors flex items-center justify-center ";
+
+                            if (isSelected) {
+                              buttonClass += "bg-green-500/30 text-green-700 font-bold";
+                            } else if (isToday) {
+                              buttonClass += "bg-blue-500/30 text-blue-700 border border-blue-300/50";
+                            } else if (isAvailable) {
+                              buttonClass += "hover:bg-primary/10 text-primary cursor-pointer";
+                            } else {
+                              buttonClass += "text-gray-300 cursor-not-allowed opacity-50";
+                            }
+
+                            return (
+                              <button
+                                key={date.toISOString()}
+                                onClick={() => handleDateClick(date)}
+                                disabled={!isAvailable}
+                                className={buttonClass}
+                              >
+                                {date.getDate()}
+                              </button>
+                            );
+                          })}
                         </div>
 
                         <Button

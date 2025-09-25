@@ -161,8 +161,13 @@ const Events = () => {
   const handleDateClick = (date) => {
     const normalizedDate = startOfDay(date);
     const dateString = format(normalizedDate, 'yyyy-MM-dd');
-    setSelectedDate(dateString);
-    setIsCalendarOpen(false);
+
+    if (selectedDate === dateString) {
+      setIsCalendarOpen(true);
+    } else {
+      setSelectedDate(dateString);
+      setIsCalendarOpen(false);
+    }
   };
 
   const goToPrevMonth = () => {
@@ -215,6 +220,25 @@ const Events = () => {
             </button>
             {isCalendarOpen && (
               <div className="absolute top-full right-0 w-64 p-4 bg-white border rounded-lg shadow-xl z-50 mt-1">
+                <div className="mb-3 space-y-1 text-xs">
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-blue-500/30 border border-blue-300/50"></div>
+                    <span>Сегодня</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-green-500/30"></div>
+                    <span>Выбранная дата</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full border bg-red-200"></div>
+                    <span>Доступная дата</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-gray-200 opacity-50"></div>
+                    <span>Недоступно</span>
+                  </div>
+                </div>
+
                 <div className="flex justify-between items-center mb-4">
                   <button
                     onClick={goToPrevMonth}
@@ -242,22 +266,35 @@ const Events = () => {
                 </div>
 
                 <div className="grid grid-cols-7 gap-1 mb-3">
-                  {daysInMonth.map(date => (
-                    <button
-                      key={date.toISOString()}
-                      onClick={() => handleDateClick(date)}
-                      disabled={!isFutureOrToday(date)}
-                      className={`w-8 h-8 text-sm rounded-full transition-colors flex items-center justify-center ${
-                        isSameDay(date, new Date()) 
-                          ? 'bg-primary/10 text-primary border border-primary/30' 
-                          : isDateAvailable(date) && isFutureOrToday(date)
-                            ? 'hover:bg-primary/5 text-primary cursor-pointer' 
-                            : 'text-gray-300 cursor-not-allowed opacity-50'
-                      }`}
-                    >
-                      {date.getDate()}
-                    </button>
-                  ))}
+                  {daysInMonth.map(date => {
+                    const dateStr = format(date, 'yyyy-MM-dd');
+                    const isToday = isSameDay(date, new Date());
+                    const isSelected = selectedDate === dateStr;
+                    const isAvailable = isDateAvailable(date) && isFutureOrToday(date);
+
+                    let buttonClass = "w-8 h-8 text-sm rounded-full transition-colors flex items-center justify-center ";
+
+                    if (isSelected) {
+                      buttonClass += "bg-green-500/30 text-green-700 font-bold";
+                    } else if (isToday) {
+                      buttonClass += "bg-blue-500/30 text-blue-700 border border-blue-300/50";
+                    } else if (isAvailable) {
+                      buttonClass += "hover:bg-primary/10 text-primary cursor-pointer";
+                    } else {
+                      buttonClass += "text-gray-300 cursor-not-allowed opacity-50";
+                    }
+
+                    return (
+                      <button
+                        key={date.toISOString()}
+                        onClick={() => handleDateClick(date)}
+                        disabled={!isAvailable}
+                        className={buttonClass}
+                      >
+                        {date.getDate()}
+                      </button>
+                    );
+                  })}
                 </div>
 
                 <Button
