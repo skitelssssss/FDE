@@ -1,0 +1,170 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+  :root {
+    --background: 30 15% 97%;
+    --foreground: 0 5% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 5% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 5% 15%;
+
+    --primary: 0 45% 35%;
+    --primary-foreground: 30 15% 97%;
+
+    --secondary: 30 25% 90%;
+    --secondary-foreground: 0 5% 15%;
+
+    --muted: 30 20% 92%;
+    --muted-foreground: 0 5% 45%;
+
+    --accent: 45 85% 60%;
+    --accent-foreground: 0 5% 15%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 30 15% 97%;
+
+    --border: 30 15% 85%;
+    --input: 30 15% 90%;
+    --ring: 0 45% 35%;
+
+    --radius: 0.75rem;
+    
+    --gradient-cultural: linear-gradient(135deg, hsl(0 45% 35%), hsl(15 55% 45%));
+    --gradient-hero: linear-gradient(135deg, hsl(0 45% 35%) 0%, hsl(15 55% 45%) 50%, hsl(45 85% 60%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(30 15% 97%), hsl(30 25% 95%));
+    
+    --shadow-cultural: 0 10px 30px -10px hsl(0 45% 35% / 0.3);
+    --shadow-card: 0 4px 20px -4px hsl(0 45% 35% / 0.1);
+    
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 0 10% 8%;
+    --foreground: 30 15% 95%;
+
+    --card: 0 5% 12%;
+    --card-foreground: 30 15% 95%;
+
+    --popover: 0 5% 12%;
+    --popover-foreground: 30 15% 95%;
+
+    --primary: 45 85% 70%;
+    --primary-foreground: 0 10% 8%;
+
+    --secondary: 0 10% 18%;
+    --secondary-foreground: 30 15% 95%;
+
+    --muted: 0 5% 15%;
+    --muted-foreground: 30 10% 65%;
+
+    --accent: 45 85% 65%;
+    --accent-foreground: 0 10% 8%;
+
+    --destructive: 0 62.8% 50%;
+    --destructive-foreground: 30 15% 95%;
+
+    --border: 0 5% 20%;
+    --input: 0 5% 18%;
+    --ring: 45 85% 70%;
+    
+    --gradient-cultural: linear-gradient(135deg, hsl(0 45% 25%), hsl(15 55% 35%));
+    --gradient-hero: linear-gradient(135deg, hsl(0 45% 25%) 0%, hsl(15 55% 35%) 50%, hsl(45 85% 60%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(0 10% 8%), hsl(0 5% 12%));
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold;
+  }
+}
+
+@layer components {
+  .hero-title {
+    @apply text-4xl md:text-5xl lg:text-6xl font-bold text-white;
+  }
+  
+  .hero-subtitle {
+    @apply text-lg md:text-xl text-white max-w-2xl mx-auto;
+  }
+  
+  .btn-cultural {
+    @apply bg-gradient-to-r from-primary to-accent text-primary-foreground px-8 py-4 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105;
+  }
+  
+  .btn-outline-cultural {
+    @apply border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground px-6 py-3 rounded-lg font-medium transition-all duration-300;
+  }
+  
+  .event-card {
+    @apply bg-card border border-border rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1;
+  }
+  
+  .bg-cultural-gradient {
+    background: var(--gradient-cultural);
+  }
+  
+  .bg-hero-gradient {
+    background: var(--gradient-hero);
+  }
+  
+  .bg-subtle-gradient {
+    background: var(--gradient-subtle);
+  }
+}
+@layer utilities {
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeInUp 0.6s ease-out both;
+  }
+}
+
